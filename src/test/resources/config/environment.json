@@ -1,0 +1,24 @@
+{
+  "sshUser": "3ds",
+  "sshHost": "153.92.127.231",
+  "sshPort": "1521",
+  "keyFile": "finartztest",
+
+  "tunnelScript": "ssh -L 127.0.0.1:1521:localhost:1521 ozan@153.92.127.231",
+
+  "dbUsername": "tds",
+  "dbPassword": "tds",
+  "dbHost": "127.0.0.1",
+  "dbDriverClass": "oracle.jdbc.driver.OracleDriver",
+
+  "restHost": "https://acs-test.finartiz.com/",
+  "restHost_local": "http://127.0.0.1:8081",
+  "restHost_hamit": "https://hamit.finartiz.com",
+  "restHost_bugra": "https://bugra.finartiz.com",
+  "restHost_yasin": "http://192.168.2.32:8082",
+
+  "appiumHost": "127.0.0.1",
+  "appiumPort": "4723",
+
+  "Cache-Control": "no-cache"
+}
