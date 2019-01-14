@@ -238,7 +238,7 @@ gradle-app.setting
 gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+gradle-wrapper.jar
 
 # Cache of project
 .gradletasknamecache
@@ -248,9 +248,5 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
-
 
 # End of https://www.gitignore.io/api/java,maven,gradle,intellij,intellij+iml,intellij+all
