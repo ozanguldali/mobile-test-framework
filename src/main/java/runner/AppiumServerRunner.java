@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.LinkedList;
+import java.util.List;
 
 import static util.EnvironmentUtil.*;
 
@@ -21,6 +23,8 @@ public class AppiumServerRunner {
     private static AppiumDriverLocalService service;
 
     static class open {
+
+        private static List<String> readerList = new LinkedList<>();
 
         public static void main(String[] args) {
 
@@ -31,7 +35,7 @@ public class AppiumServerRunner {
             desiredCapabilities.setCapability( MobileCapabilityType.NO_RESET, "false" );
             desiredCapabilities.setCapability( MobileCapabilityType.CLEAR_SYSTEM_FILES, true );
 
-            if( isPortAvailable( Integer.parseInt( APPIUM_PORT ), true ) ) {
+            if( isPortAvailableScript( Integer.parseInt( APPIUM_PORT ), true ) ) {
 
                 ENV_MAP.put( "PATH", "/usr/local/bin:" + ENV_MAP.get( "PATH" ) );
 
@@ -45,9 +49,7 @@ public class AppiumServerRunner {
                 service = AppiumDriverLocalService.buildService( builder );
                 service.start();
 
-            }
-
-            else {
+            } else {
 
                System.out.println( "Appium Server already running on Port - " + APPIUM_PORT);
                System.exit( 0 );
@@ -56,7 +58,7 @@ public class AppiumServerRunner {
 
         }
 
-        static boolean isPortAvailable(int port, boolean kill) {
+        static boolean isPortAvailableServer(int port, boolean kill) {
 
             ServerSocket serverSocket = null;
 
@@ -69,7 +71,10 @@ public class AppiumServerRunner {
 
                 serverSocket.bind( new InetSocketAddress( InetAddress.getByName( "localhost" ), port ), 1 );
 
+                serverSocket.close();
+
                 System.out.println( String.format( "\tThe port is available: [%d]\t\n", port ) );
+
                 return true;
 
             } catch (Exception e) {
@@ -80,13 +85,56 @@ public class AppiumServerRunner {
 
                     killPort( port );
                     System.out.println( String.format( "\tKilling the port: [%d]\t\n", port ) );
+                    waitForNSeconds( 2 );
 //                standPort( port );
-//                isPortAvailable( port, false );
+//                waitForNSeconds( 2 );
+
+                isPortAvailableServer( port, false );
 
                 }
 
                 return false;
 
+            }
+
+        }
+
+        private static boolean isPortAvailableScript(int port, boolean kill) {
+
+            executeRuntimeCommand( "lsof -t -i:" + port );
+
+            boolean available = true;
+
+            for ( String line : readerList ) {
+
+                if ( line.equals( String.valueOf( port ) ) )
+                    available = false;
+
+            }
+
+            if ( available ) {
+
+                System.out.println( String.format( "\tThe port is available: [%d]\t\n", port ) );
+
+                return true;
+
+            } else {
+
+                System.out.println( String.format( "\tThe port is NOT available: [%d]\t\n", port ) );
+
+                if ( kill ) {
+
+                    killPort( port );
+                    System.out.println( String.format( "\tKilling the port: [%d]\t\n", port ) );
+                    waitForNSeconds( 2 );
+    //                standPort( port );
+    //                waitForNSeconds( 2 );
+
+                    isPortAvailableScript( port, false );
+
+                }
+
+                return false;
             }
 
         }
@@ -137,6 +185,9 @@ public class AppiumServerRunner {
 
                     if ( ( line = reader.readLine() ) == null ) break;
 
+                    else
+                        readerList.add( line );
+
                 } catch (IOException e) {
 
                     System.exit( 0 );
@@ -154,6 +205,22 @@ public class AppiumServerRunner {
             } catch (InterruptedException e) {
 
                 System.exit( 0 );
+
+            }
+
+        }
+
+        private static void waitForNSeconds(long seconds) {
+
+            try {
+
+                Thread.sleep( seconds * 1000L );
+                System.out.println( "\tWait for [" + seconds + "] seconds\t\n" );
+
+            } catch (Exception e) {
+
+                System.out.println( "\tError during waiting for [" + seconds + "] seconds.\t\n" );
+                e.printStackTrace();
 
             }
 

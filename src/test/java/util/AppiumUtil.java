@@ -7,21 +7,21 @@ import org.junit.Assert;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static step.AppiumStepDefinitions.service;
-import static util.EnvironmentUtil.APPIUM_HOST;
 import static util.EnvironmentUtil.ENV_MAP;
 import static util.LoggingUtil.LOGGER;
 
 public class AppiumUtil {
 
-    public static void startAppiumServer(AppiumServiceBuilder builder, DesiredCapabilities capabilities, int port) {
+    public static void startAppiumServer(AppiumServiceBuilder builder, DesiredCapabilities capabilities, String host, int port) {
 
         ENV_MAP.put( "PATH", "/usr/local/bin:" + ENV_MAP.get( "PATH" ) );
 
-        builder.withIPAddress( APPIUM_HOST );
+        builder.withIPAddress( host );
         builder.usingPort( port );
+//        builder.usingAnyFreePort();
         builder.withCapabilities( capabilities );
         builder.withArgument( GeneralServerFlag.SESSION_OVERRIDE );
-        builder.withArgument( GeneralServerFlag.LOG_LEVEL,"error" );
+        builder.withArgument( GeneralServerFlag.LOG_LEVEL,"debug" );
         builder.withEnvironment( ENV_MAP );
 
         service = AppiumDriverLocalService.buildService( builder );

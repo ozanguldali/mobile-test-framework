@@ -1,59 +1,57 @@
 package runner;
 
+import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import org.junit.Assert;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
-import static step.AppiumStepDefinitions.startServer;
-import static util.AppiumUtil.stopAppiumServer;
 import static util.EnvironmentUtil.*;
 import static util.LoggingUtil.LOGGER;
+import static util.ServerUtil.isPortAvailableScript;
 
 public class AppiumServerRunner {
 
-    static class open {
+    private static AppiumDriverLocalService service;
+
+
+    public static class open {
 
         public static void main(String[] args) {
 
-            Map<String, String> dataMap = new HashMap<>();
+            AppiumServiceBuilder builder = new AppiumServiceBuilder();
 
-//            dataMap.put( MobileCapabilityType.NO_RESET,             "false" );
-//            dataMap.put( MobileCapabilityType.CLEAR_SYSTEM_FILES,   "true" );
-            dataMap.put( "port", APPIUM_PORT );
-            dataMap.put( "host", APPIUM_HOST );
+            DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
-            dataMap.put("platformName", "Android");
-            dataMap.put( "platformVersion", "9" );
-            dataMap.put( "browserName", "Chrome" );
-            dataMap.put( "deviceName", "127.0.0.1:5554" );
+            desiredCapabilities.setCapability(MobileCapabilityType.NO_RESET, "false");
+            desiredCapabilities.setCapability(MobileCapabilityType.CLEAR_SYSTEM_FILES, true);
 
-            startServer( dataMap );
+            if (isPortAvailableScript(Integer.parseInt(APPIUM_PORT), true)) {
 
-//            AppiumServiceBuilder builder = new AppiumServiceBuilder();
-//
-//            Map<String, String> dataMap = new HashMap<>();
-//
-//            desiredCapabilities = new DesiredCapabilities();
-//
-//            dataMap.put( MobileCapabilityType.NO_RESET,             "false" );
-//            dataMap.put( MobileCapabilityType.CLEAR_SYSTEM_FILES,   "true" );
-//
-//            setDesiredCapabilities( desiredCapabilities, dataMap );
-//
-//            if( isPortAvailable( Integer.parseInt( APPIUM_PORT ), true ) )
-//                startAppiumServer( builder, desiredCapabilities, Integer.parseInt( APPIUM_PORT ) );
-//
-//            else {
-//
-//                LOGGER.error( "Appium Server already running on Port - " + APPIUM_PORT );
-//                Assert.fail();
-//
-//            }
+                ENV_MAP.put("PATH", "/usr/local/bin:" + ENV_MAP.get("PATH"));
+
+                builder.withIPAddress(APPIUM_HOST);
+                builder.usingPort(Integer.parseInt(APPIUM_PORT));
+                builder.withCapabilities(desiredCapabilities);
+                builder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);
+                builder.withArgument(GeneralServerFlag.LOG_LEVEL, "error");
+                builder.withEnvironment(ENV_MAP);
+
+                service = AppiumDriverLocalService.buildService(builder);
+                service.start();
+
+            } else {
+
+                System.out.println("Appium Server already running on Port - " + APPIUM_PORT);
+                System.exit(0);
+
+            }
 
         }
 
@@ -63,13 +61,25 @@ public class AppiumServerRunner {
 
         public static void main(String[] args) {
 
-            stopAppiumServer( APPIUM_PORT );
+            try {
+
+                service.stop();
+
+                System.out.println( "\tThe server is closed.\t\n" );
+
+            } catch (Exception e) {
+
+                System.out.println( "\tThe server could NOT been closed.\t\n" );
+                e.printStackTrace();
+                System.exit( 0 );
+
+            }
 
         }
 
     }
 
-    static class emulatorRunner {
+    public static class emulatorRunner {
 
         public static void main(String[] args) {
 

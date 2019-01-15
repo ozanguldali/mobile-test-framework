@@ -20,7 +20,7 @@ import static util.DriverUtil.setDriver;
 import static util.EnvironmentUtil.APPIUM_HOST;
 import static util.EnvironmentUtil.APPIUM_PORT;
 import static util.LoggingUtil.LOGGER;
-import static util.ServerUtil.isPortAvailable;
+import static util.ServerUtil.isPortAvailableSocket;
 
 public class AppiumStepDefinitions {
 
@@ -42,8 +42,8 @@ public class AppiumStepDefinitions {
 
         setDesiredCapabilities( desiredCapabilities, dataMap );
 
-        if( isPortAvailable( Integer.parseInt( port ), true ) )
-            startAppiumServer( builder, desiredCapabilities, Integer.parseInt( port ) );
+        if( isPortAvailableSocket( Integer.parseInt( port ), true ) )
+            startAppiumServer( builder, desiredCapabilities, host, Integer.parseInt( port ) );
 
         else {
 

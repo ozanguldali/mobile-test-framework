@@ -8,8 +8,7 @@ import org.junit.Assert;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
-import static step.AppiumStepDefinitions.*;
-import static util.AppiumUtil.stopAppiumServer;
+import static step.AppiumStepDefinitions.appiumDriver;
 import static util.CommonStepUtil.quitAppiumDriver;
 import static util.LoggingUtil.LOGGER;
 
@@ -51,18 +50,18 @@ public class CommonStepDefinitions {
 
             }
 
-            if ( service != null  ) {
-
-                stopAppiumServer( port );
-
-            }
+//            if ( service != null  ) {
+//
+//                stopAppiumServer( port );
+//
+//            }
 
         } else {
 
             if ( appiumDriver != null )
                 quitAppiumDriver( appiumDriver );
 
-            stopAppiumServer( port );
+//            stopAppiumServer( port );
 
         }
 

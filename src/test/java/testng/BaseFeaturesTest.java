@@ -1,6 +1,7 @@
 package testng;
 
 import org.testng.annotations.Factory;
+import runner.AppiumServerRunner;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,7 +15,11 @@ public class BaseFeaturesTest {
 
     public BaseFeaturesTest() {
 
+        String[] args = new String[ 0 ];
 
+//        AppiumServerRunner.emulatorRunner.main( args );
+
+        AppiumServerRunner.open.main( args );
 
     }
 
