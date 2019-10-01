@@ -17,7 +17,8 @@ public class BaseFeaturesTest {
 
         String[] args = new String[ 0 ];
 
-//        AppiumServerRunner.emulatorRunner.main( args );
+        AppiumServerRunner.emulatorRunner.main( args );
+
 
         AppiumServerRunner.open.main( args );
 

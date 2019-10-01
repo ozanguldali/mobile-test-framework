@@ -20,7 +20,6 @@ public class AppiumServerRunner {
 
     private static AppiumDriverLocalService service;
 
-
     public static class open {
 
         public static void main(String[] args) {

@@ -14,7 +14,6 @@ import static step.AppiumStepDefinitions.port;
 import static util.LoggingUtil.LOGGER;
 
 public class AppiumStepHelper {
-
     public static void setDesiredCapabilities(DesiredCapabilities desiredCapabilities, Map<String, String> dataMap) {
 
         dataMap.forEach( ( key, value ) -> {
